@@ -1,2 +1,2 @@
 # Algorithms
-Programming tips and tricks.
+Programming tips and tricks..
