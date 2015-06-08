@@ -1,0 +1,46 @@
+***
+x & ~(x-1): lowest bit value (not index)
+***
+__builtin_ctz (count trailing zeros) and __builtin_clz (count leading zeros) [c++ methods (the return value is undefined for an argument of zero.)]
+__builtin_popcount (returns count of set bits)
+***
+check if a number is a power of 2: clear the lowest 1 bit (see above) and check if the result is 0.
+***
+Counting bits set by lookup table
+
+static const unsigned char BitsSetTable256[256] =
+{
+#   define B2(n) n,     n+1,     n+1,     n+2
+#   define B4(n) B2(n), B2(n+1), B2(n+1), B2(n+2)
+#   define B6(n) B4(n), B4(n+1), B4(n+1), B4(n+2)
+    B6(0), B6(1), B6(1), B6(2)
+};
+
+unsigned int v; // count the number of bits set in 32-bit value v
+unsigned int c; // c is the total bits set in v
+
+// Option 1:
+c = BitsSetTable256[v & 0xff] +
+    BitsSetTable256[(v >> 8) & 0xff] +
+    BitsSetTable256[(v >> 16) & 0xff] +
+    BitsSetTable256[v >> 24];
+
+// Option 2:
+unsigned char * p = (unsigned char *) &v;
+c = BitsSetTable256[p[0]] +
+    BitsSetTable256[p[1]] +
+    BitsSetTable256[p[2]] +
+    BitsSetTable256[p[3]];
+
+
+// To initially generate the table algorithmically:
+BitsSetTable256[0] = 0;
+for (int i = 0; i < 256; i++)
+{
+  BitsSetTable256[i] = (i & 1) + BitsSetTable256[i / 2];  // >>> This is useful...<<<
+}
+***
+Setting only most significant bit.
+y = y | ( y >>1 ) ;        y = y  | ( y >>2 );            y = y  | ( y >>4 );            y = y  | ( y >>8 );            y = y  |  ( y >>16 ) ;
+y =  ( y + 1 ) >> 1;
+***
